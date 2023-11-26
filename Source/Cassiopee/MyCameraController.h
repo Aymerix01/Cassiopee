@@ -18,6 +18,9 @@ class CASSIOPEE_API AMyCameraController : public APlayerController
 public:
 	AMyCameraController();
 
+	UPROPERTY(EditAnywhere)
+		float EntityNumber;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		float ShortPressThreshold;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -40,5 +43,5 @@ protected:
 
 private:
 	FVector CachedDestination;
-	APawn* ControlledPawn;
+	TArray<APawn*> MyEntityArray;
 };

@@ -29,20 +29,8 @@ AMyEntityController::AMyEntityController()
 void AMyEntityController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AMyEntity::StaticClass(), TEXT("Korogu"), FoundActors);
-
-	if (FoundActors.Num() > 0)
-	{
-		AMyEntity* MyEntityInstance = Cast<AMyEntity>(FoundActors[0]);
-
-		if (MyEntityInstance)
-		{
-			ControlledPawn = MyEntityInstance;
-			this->Possess(MyEntityInstance);
-		}
-	}
+	ControlledPawn = GetPawn();
+	IADestination = ControlledPawn->GetActorLocation();
 }
 
 void AMyEntityController::TravelToDestination(FVector destination)
@@ -74,7 +62,7 @@ bool AMyEntityController::HasReachedDestination(FVector destination) const
 	{
 		FVector CurrentLocation = FVector(ControlledPawn->GetActorLocation().X, ControlledPawn->GetActorLocation().Y, ControlledPawn->GetActorLocation().Z-97.f);
 		float DistanceSquared = FVector::DistSquared(CurrentLocation, destination);
-		float ToleranceSquared = 100.0f * 100.0f;
+		float ToleranceSquared = 200.0f * 200.0f;
 
 		return DistanceSquared <= ToleranceSquared;
 	}
@@ -127,6 +115,5 @@ void AMyEntityController::Tick(float DeltaTime)
 		{
 			FollowTimeForIA = 0.0f;
 		}
-		
 	}
 }

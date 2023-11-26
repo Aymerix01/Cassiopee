@@ -17,6 +17,7 @@ AMyCameraController::AMyCameraController()
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
+	EntityNumber = 10;
 }
 
 void AMyCameraController::BeginPlay()
@@ -29,13 +30,20 @@ void AMyCameraController::BeginPlay()
 		UClass* MyEntityPawnClass = LoadClass<APawn>(nullptr, TEXT("Blueprint'/Game/BP/BP_MyEntity.BP_MyEntity_C'"));
 		if (MyEntityPawnClass)
 		{
-			FVector SpawnLocationValue(1200.0f, 0.0f, 0.0f);
-			FRotator SpawnRotation(0.0f, 0.0f, 0.0f);
-			AActor* SpawnedPawn = UGameplayStatics::BeginDeferredActorSpawnFromClass(World, MyEntityPawnClass, FTransform(SpawnRotation, SpawnLocationValue));
-			UGameplayStatics::FinishSpawningActor(SpawnedPawn, FTransform(SpawnRotation, SpawnLocationValue));
-			ControlledPawn = Cast<APawn>(SpawnedPawn);
+			for (int32 i = 0; i < EntityNumber; ++i)
+			{
+				FVector SpawnLocationValue(1200.0f + i * 200.0f, 0.0f, 0.0f); // Ajustez la position en fonction de vos besoins
+				FRotator SpawnRotation(0.0f, 0.0f, 0.0f);
+
+				AActor* SpawnedPawn = UGameplayStatics::BeginDeferredActorSpawnFromClass(World, MyEntityPawnClass, FTransform(SpawnRotation, SpawnLocationValue));
+				FString EntityTag = FString::Printf(TEXT("Korogu_%d"), i);
+				SpawnedPawn->Tags.Add(*EntityTag);
+				UGameplayStatics::FinishSpawningActor(SpawnedPawn, FTransform(SpawnRotation, SpawnLocationValue));
+				MyEntityArray.Add(Cast<APawn>(SpawnedPawn));
+			}
 		}
 	}
+
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -68,9 +76,12 @@ void AMyCameraController::FindHitLocation()
 
 void AMyCameraController::CallEntityMovement() 
 {
-	AMyEntityController* EntityController = ControlledPawn ? Cast<AMyEntityController>(ControlledPawn->GetController()) : nullptr;
-	if (EntityController)
+	for (int32 i = 0; i < EntityNumber; ++i)
 	{
-		EntityController->TravelToDestination(CachedDestination);
+		AMyEntityController* EntityController = MyEntityArray[i] ? Cast<AMyEntityController>(MyEntityArray[i]->GetController()) : nullptr;
+		if (EntityController)
+		{
+			EntityController->TravelToDestination(CachedDestination);
+		}
 	}
 }

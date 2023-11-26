@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include <Kismet/GameplayStatics.h>
 
 AMyEntity::AMyEntity()
 {
@@ -33,20 +34,20 @@ AMyEntity::AMyEntity()
 void AMyEntity::BeginPlay()
 {
 	Super::BeginPlay();
-	this->Tags.Add("Korogu");
 	UClass* MyEntityControllerClass = LoadClass<APlayerController>(nullptr, TEXT("Blueprint'/Game/BP/BP_MyEntityController.BP_MyEntityController_C'"));
 	if (MyEntityControllerClass)
 	{
-		APlayerController* NewController = GetWorld()->SpawnActor<APlayerController>(MyEntityControllerClass, FVector::ZeroVector, FRotator::ZeroRotator);
-
+		AActor* NewController = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), MyEntityControllerClass, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 		if (NewController)
 		{
-			this->Controller = NewController;
+			this->Controller = Cast<APlayerController>(NewController);
+			Cast<APlayerController>(NewController)->Possess(this);
 		}
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("Failed to create MyEntityController instance"));
 		}
+		UGameplayStatics::FinishSpawningActor(NewController, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	}
 	else
 	{
