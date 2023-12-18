@@ -13,17 +13,20 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "NavigationSystem.h"
+#include "Navigation/CrowdFollowingComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/LocalPlayer.h"
 
 
-AMyEntityController::AMyEntityController()
+AMyEntityController::AMyEntityController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
 {
-	bShowMouseCursor = true;
-	DefaultMouseCursor = EMouseCursor::Default;
+	IsArrivedToBuild = true;
 	IADestination = FVector::ZeroVector;
 	FollowTimeForIA = 0.f;
+	timeBeforeMotionless = 0.f;
 	IdleTimeBeforeRandomMove = 5.f;
+	maxTimeWaitingMotionless = 10.f;
 }
 
 void AMyEntityController::BeginPlay()
@@ -31,6 +34,40 @@ void AMyEntityController::BeginPlay()
 	Super::BeginPlay();
 	ControlledPawn = GetPawn();
 	IADestination = ControlledPawn->GetActorLocation();
+}
+
+FVector AMyEntityController::PlaceActorAroundBounds(FVector Origin, FVector Extent, float EntityIndex, float countEntity) 
+{
+	UWorld* World = GetWorld();
+	ACharacter* MyCharacter = Cast<ACharacter>(ControlledPawn);
+	if (!World)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Unable to access the world."));
+		return FVector(0, 0, 0);
+	}
+
+	float largeur = FMath::Abs(Extent.Y)*2;
+	float longueur = FMath::Abs(Extent.X)*2;
+	
+	float perimetre = longueur * 2 + largeur * 2;
+	float posEntityOnPerimetre = (perimetre / countEntity) * EntityIndex;
+
+	FVector posResult;
+
+	if (posEntityOnPerimetre < longueur) {
+		posResult =  Origin + FVector(posEntityOnPerimetre - longueur/2, - largeur/2, 0);
+	}
+	else if (posEntityOnPerimetre < longueur + largeur) {
+		posResult = Origin + FVector(longueur/2, posEntityOnPerimetre - longueur - largeur / 2, 0);
+	}
+	else if (posEntityOnPerimetre < 2 * longueur + largeur) {
+		posResult = Origin + FVector(posEntityOnPerimetre - 2 * longueur - largeur + longueur / 2, largeur/2, 0);
+	}
+	else {
+		posResult = Origin + FVector(-longueur/2, posEntityOnPerimetre - 2 * longueur - 2 * largeur + largeur / 2, 0);
+	}
+	return posResult;
+	//UE_LOG(LogTemp, Warning, TEXT("Vector: X = %f, Y = %f, Z = %f"), RandomLocation.X, RandomLocation.Y, RandomLocation.Z);
 }
 
 void AMyEntityController::TravelToDestination(FVector destination)
@@ -51,7 +88,33 @@ void AMyEntityController::TravelToDestination(FVector destination)
 				MovementComponent->MaxAcceleration = 1000.0f;
 			}
 		}
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, destination);
+		MoveToLocation(destination);
+		//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, destination);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, destination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+	}
+}
+
+void AMyEntityController::TravelToNewBuilding(FVector destination)
+{
+	if (ControlledPawn != nullptr)
+	{
+		IADestination = destination;
+		FVector WorldDirection = (destination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+		FRotator NewControlRotation = WorldDirection.Rotation();
+		SetControlRotation(NewControlRotation);
+		ACharacter* MyCharacter = Cast<ACharacter>(ControlledPawn);
+		if (MyCharacter)
+		{
+			UCharacterMovementComponent* MovementComponent = MyCharacter->GetCharacterMovement();
+			if (MovementComponent)
+			{
+				MovementComponent->MaxWalkSpeed = 400.0f;
+				MovementComponent->MaxAcceleration = 1000.0f;
+			}
+		}
+		MoveToLocation(destination);
+		IsArrivedToBuild = false;
+		//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, destination);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, destination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
 }
@@ -67,6 +130,15 @@ bool AMyEntityController::HasReachedDestination(FVector destination) const
 		return DistanceSquared <= ToleranceSquared;
 	}
 	return true;
+}
+bool AMyEntityController::IsMotionlessForSomeTime(float time) const
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Vector: X = %f, Y = %f, Z = %f"), ControlledPawn->GetVelocity().X, ControlledPawn->GetVelocity().Y, ControlledPawn->GetVelocity().Z);
+	//UE_LOG(LogTemp, Warning, TEXT("Time: t = %f"), time);
+	if (ControlledPawn && time > maxTimeWaitingMotionless && ControlledPawn->GetVelocity() == FVector(0, 0, 0)) {
+		return true;
+	}
+	return false;
 }
 
 void AMyEntityController::GetNavMeshBounds(TArray<FBox>& OutNavBounds)
@@ -102,18 +174,16 @@ void AMyEntityController::Tick(float DeltaTime)
 
 	if (ControlledPawn != nullptr)
 	{
-		if (!IsMoveInputIgnored() && HasReachedDestination(IADestination))
-		{
+		timeBeforeMotionless += DeltaTime;
+		if ((HasReachedDestination(IADestination) || IsMotionlessForSomeTime(timeBeforeMotionless)) && IsArrivedToBuild)
+		{	
 			FollowTimeForIA += DeltaTime;
 			if (FollowTimeForIA >= IdleTimeBeforeRandomMove)
 			{
 				MoveRandomly();
+				IsArrivedToBuild = true;
 				FollowTimeForIA = 0.0f;
 			}
-		}
-		else
-		{
-			FollowTimeForIA = 0.0f;
 		}
 	}
 }
