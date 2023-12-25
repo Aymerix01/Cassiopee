@@ -35,7 +35,7 @@ AMyEntity::AMyEntity()
 void AMyEntity::BeginPlay()
 {
 	Super::BeginPlay();
-	UClass* MyEntityControllerClass = LoadClass<AAIController>(nullptr, TEXT("Blueprint'/Game/BP/BP_MyEntityController.BP_MyEntityController_C'"));
+	UClass* MyEntityControllerClass = LoadClass<AAIController>(nullptr, TEXT("Blueprint'/Game/BP/Entity/oldVersion/BP_MyEntityController.BP_MyEntityController_C'"));
 	if (MyEntityControllerClass)
 	{
 		AActor* NewController = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), MyEntityControllerClass, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
