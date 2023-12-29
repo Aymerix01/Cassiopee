@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
+#include "AIController.h"
 #include "Engine/World.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -34,14 +35,14 @@ AMyEntity::AMyEntity()
 void AMyEntity::BeginPlay()
 {
 	Super::BeginPlay();
-	UClass* MyEntityControllerClass = LoadClass<APlayerController>(nullptr, TEXT("Blueprint'/Game/BP/BP_MyEntityController.BP_MyEntityController_C'"));
+	UClass* MyEntityControllerClass = LoadClass<AAIController>(nullptr, TEXT("Blueprint'/Game/BP/Entity/oldVersion/BP_MyEntityController.BP_MyEntityController_C'"));
 	if (MyEntityControllerClass)
 	{
 		AActor* NewController = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), MyEntityControllerClass, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 		if (NewController)
 		{
-			this->Controller = Cast<APlayerController>(NewController);
-			Cast<APlayerController>(NewController)->Possess(this);
+			this->Controller = Cast<AAIController>(NewController);
+			Cast<AAIController>(NewController)->Possess(this);
 		}
 		else
 		{
