@@ -11,7 +11,11 @@ ADiamondSquare::ADiamondSquare()
 	PrimaryActorTick.bCanEverTick = false;
 
 	ProceduralMesh = CreateDefaultSubobject<UProceduralMeshComponent>("ProceduralMesh");
+	ProceduralMesh->SetMobility(EComponentMobility::Static);
+	ProceduralMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	ProceduralMesh->SetupAttachment(GetRootComponent());
+	ProceduralMesh->SetCollisionResponseToAllChannels(ECR_Block);
+	RootComponent = ProceduralMesh;
 }
 
 // Called when the game starts or when spawned
