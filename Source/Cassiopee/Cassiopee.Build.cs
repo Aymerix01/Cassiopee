@@ -17,7 +17,8 @@ public class Cassiopee : ModuleRules
                 "NavigationSystem", 
 				"AIModule", 
 				"Niagara", 
-				"EnhancedInput"});
+				"EnhancedInput",
+                "ProceduralMeshComponent"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
