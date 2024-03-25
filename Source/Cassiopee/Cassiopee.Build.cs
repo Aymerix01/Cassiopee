@@ -18,7 +18,8 @@ public class Cassiopee : ModuleRules
 				"AIModule", 
 				"Niagara", 
 				"EnhancedInput",
-                "ProceduralMeshComponent"});
+                "ProceduralMeshComponent",
+				"Water"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
