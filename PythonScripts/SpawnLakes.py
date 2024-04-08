@@ -19,7 +19,7 @@ def spawnLake(points=[]):
     for i in range(len(points)):
         points[i] = unreal.Vector(points[i][0], points[i][1], points[i][2])
         
-    spline.set_spline_points(points, unreal.SplineCoordinateSpace.WORLD, True)
+    spline.ResetSpline(points)
 
     # spline.k2_synchronize_and_broadcast_data_change()
 
