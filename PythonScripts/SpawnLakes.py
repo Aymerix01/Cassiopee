@@ -21,6 +21,6 @@ def spawnLake(points=[]):
         
     spline.ResetSpline(points)
 
-    # spline.k2_synchronize_and_broadcast_data_change()
+    spline.k2_synchronize_and_broadcast_data_change()
 
     print("After : ", [lake.get_water_spline().get_location_at_spline_input_key(i, unreal.SplineCoordinateSpace.WORLD) for i in range(spline.get_number_of_spline_points())])

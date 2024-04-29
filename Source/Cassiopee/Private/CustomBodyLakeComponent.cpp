@@ -8,7 +8,7 @@ UCustomBodyLakeComponent::UCustomBodyLakeComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	AActor* Owner = GetOwner();
 
@@ -78,6 +78,5 @@ void UCustomBodyLakeComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UE_LOG(LogTemp, Log, TEXT("WaterSpline address : %p"), WaterSpline);
 }
 
