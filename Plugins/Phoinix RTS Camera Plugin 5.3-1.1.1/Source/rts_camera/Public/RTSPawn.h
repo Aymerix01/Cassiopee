@@ -54,6 +54,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float MovementSmoothness = 4.0f;
 
+	// Limits of the Camera Movement in the World
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	FVector4 Boundaries = FVector4(-5000, 5000, -5000, 5000);
+
 	// Whether the RTS Camera should always have the same height or adjust to the world
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Height Adjustment")
 	bool HeightAdjustment = true;
