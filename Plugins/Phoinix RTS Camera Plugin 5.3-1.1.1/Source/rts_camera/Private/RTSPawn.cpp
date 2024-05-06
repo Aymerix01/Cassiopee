@@ -113,8 +113,23 @@ void ARTSPawn::ResetCamera()
 
 void ARTSPawn::XMovement(const FInputActionValue &Value)
 {
+	FVector ActorLocation = GetActorLocation();
 	float AxisValue = Value.GetMagnitude();
 	FVector Movement;
+	if (ActorLocation.X <= Boundaries.Z)
+	{
+		if (AxisValue < 0)
+		{
+			AxisValue = 0;
+		}
+	}
+	else if (ActorLocation.X >= Boundaries.W)
+	{
+		if (AxisValue > 0)
+		{
+			AxisValue = 0;
+		}
+	}
 	Movement.X = AxisValue * MovementMultiplier * GetAdjustedDeltaTime();
 	Movement.Y = 0;
 	Movement.Z = 0;
@@ -125,9 +140,24 @@ void ARTSPawn::XMovement(const FInputActionValue &Value)
 
 void ARTSPawn::YMovement(const FInputActionValue &Value)
 {
+	FVector ActorLocation = GetActorLocation();
 	float AxisValue = Value.GetMagnitude();
 	FVector Movement;
 	Movement.X = 0;
+	if (ActorLocation.Y <= Boundaries.X)
+	{
+		if (AxisValue < 0)
+		{
+			AxisValue = 0;
+		}
+	}
+	else if (ActorLocation.Y >= Boundaries.Y)
+	{
+		if (AxisValue > 0)
+		{
+			AxisValue = 0;
+		}
+	}
 	Movement.Y = AxisValue * MovementMultiplier * GetAdjustedDeltaTime();
 	Movement.Z = 0;
 	Movement = UKismetMathLibrary::TransformDirection(GetActorTransform(), Movement);

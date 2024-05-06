@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "MyEntity.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "MyEntity.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -33,7 +33,7 @@ AMyEntity::AMyEntity()
 }
 
 void AMyEntity::BeginPlay()
-{
+{/*
 	Super::BeginPlay();
 	UClass* MyEntityControllerClass = LoadClass<AAIController>(nullptr, TEXT("Blueprint'/Game/BP/Entity/oldVersion/BP_MyEntityController.BP_MyEntityController_C'"));
 	if (MyEntityControllerClass)
@@ -54,4 +54,5 @@ void AMyEntity::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to load MyEntityController class"));
 	}
+	*/
 }
