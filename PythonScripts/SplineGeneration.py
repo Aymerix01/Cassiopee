@@ -20,7 +20,7 @@ def convImageToSplinePoints(file, outputFile, pointsProp = 0.02):
         dic["lakes"].append([{"x" : int(array[j][1]), "y" : int(array[j][0])} for j in range(0, len(array), int(1/pointsProp))])
 
 
-    print("Lakes : ", sys.getsizeof(dic))
-    print(dic)
+    # print("Lakes : ", sys.getsizeof(dic))
+    # print(dic)
     with open(outputFile + ".json", "w") as f:
         json.dump(dic, f)

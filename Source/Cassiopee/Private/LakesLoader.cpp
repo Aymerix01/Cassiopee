@@ -68,24 +68,42 @@ void LakesLoader::spawnLakes(TSharedPtr<FJsonObject> jsonFile, UWorld* world)
 
 		float rapp = (float)(maxX - minX) / (float)lakesSize;
 
-		UE_LOG(LogTemp, Log, TEXT("rapp : %d"), rapp);
+		/*UE_LOG(LogTemp, Log, TEXT("rapp : %d"), rapp);
 		UE_LOG(LogTemp, Log, TEXT("lakesSize : %d"), lakesSize);
 		UE_LOG(LogTemp, Log, TEXT("maxX : %d"), maxX);
-		UE_LOG(LogTemp, Log, TEXT("minX : %d"), minX);
+		UE_LOG(LogTemp, Log, TEXT("minX : %d"), minX);*/
 
+		FCollisionQueryParams collisionParams(FName(TEXT("FoliageClusterPlacementTrace")), true, nullptr);
+		collisionParams.bReturnPhysicalMaterial = true;
 
 		for (TSharedPtr< FJsonValue > lakeVar : jsonFile->GetArrayField("lakes")) {
 			TArray< TSharedPtr< FJsonValue > > points = lakeVar->AsArray();
 
+			float zHeight = 0;
+			FVector sum = FVector::Zero();
+
 			TArray<FVector> LakePoints;	
 
-			for (int i = points.Num() - 1; i >= 0; i--){
+			for (int i = 0; i < points.Num(); i++){
 				TSharedPtr< FJsonObject > point = points[i]->AsObject();
 				LakePoints.Add(FVector(minX + rapp * point->GetIntegerField("x"), minY + rapp * point->GetIntegerField("y"), 0));
 				//UE_LOG(LogTemp, Log, TEXT("Point at position : x : %f ; y : %f"), minX + rapp * point->GetIntegerField("x"), minY + rapp * point->GetIntegerField("y"));
+				sum += FVector(minX + rapp * point->GetIntegerField("x"), minY + rapp * point->GetIntegerField("y"), 0);
 			}
 
+			FVector center = sum / points.Num();
+			FHitResult hit(ForceInit);
+
+
+			if (landscape->ActorLineTraceSingle(hit, center + FVector::UpVector * 10000, center - FVector::UpVector * 10000, ECC_Visibility, collisionParams)) {
+				zHeight = hit.ImpactPoint.Z - 100;
+				//UE_LOG(LogTemp, Log, TEXT("Collision !!"), maxX);
+			}
+
+			// DrawDebugLine(world, center - 10000 * FVector::UpVector, center + 10000 * FVector::UpVector, FColor::Red, true);
+
 			AActor* lake = world->SpawnActor(bp->GeneratedClass);
+			lake->SetActorLocation(FVector(0., 0., zHeight), false, nullptr, ETeleportType::None);
 			UCustomBodyLakeComponent* watComp = lake->FindComponentByClass<UCustomBodyLakeComponent>();
 
 			watComp->SetLakePoints(LakePoints);
