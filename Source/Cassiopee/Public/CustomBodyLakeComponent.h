@@ -22,6 +22,9 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	#endif // WITH_EDITOR
 
+	void UpdateLake();
+	void SetLakePoints(TArray<FVector> points);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

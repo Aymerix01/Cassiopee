@@ -2,6 +2,7 @@
 
 
 #include "CustomBodyLakeComponent.h"
+#include "Serialization/JsonSerializer.h"
 
 // Sets default values for this component's properties
 UCustomBodyLakeComponent::UCustomBodyLakeComponent()
@@ -12,15 +13,15 @@ UCustomBodyLakeComponent::UCustomBodyLakeComponent()
 
 	AActor* Owner = GetOwner();
 
-	UE_LOG(LogTemp, Log, TEXT("Owner address : %p"), Owner);
+	//UE_LOG(LogTemp, Log, TEXT("Owner address : %p"), Owner);
 
 	if (Owner != nullptr) {
 		WaterBodyComponent = Owner->FindComponentByClass<UWaterBodyComponent>();
 		WaterSpline = Owner->FindComponentByClass<UWaterSplineComponent>();
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("WaterBodyComponent address : %p"), WaterBodyComponent);
-	UE_LOG(LogTemp, Log, TEXT("WaterSpline address : %p"), WaterSpline);
+	//UE_LOG(LogTemp, Log, TEXT("WaterBodyComponent address : %p"), WaterBodyComponent);
+	//UE_LOG(LogTemp, Log, TEXT("WaterSpline address : %p"), WaterSpline);
 
 	LakePoints.Init(FVector::ZeroVector, 0);
 }
@@ -28,39 +29,32 @@ UCustomBodyLakeComponent::UCustomBodyLakeComponent()
 void UCustomBodyLakeComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	UE_LOG(LogTemp, Log, TEXT("Is WaterSpline null : %d"), WaterSpline == nullptr);
-	UE_LOG(LogTemp, Log, TEXT("WaterSpline address : %p"), WaterSpline);
-	UE_LOG(LogTemp, Log, TEXT("nullptdr address : %p"), nullptr);
+	//UE_LOG(LogTemp, Log, TEXT("Is WaterSpline null : %d"), WaterSpline == nullptr);
+	//UE_LOG(LogTemp, Log, TEXT("WaterSpline address : %p"), WaterSpline);
+	//UE_LOG(LogTemp, Log, TEXT("nullptdr address : %p"), nullptr);	
 
 	WaterSpline = GetOwner()->FindComponentByClass<UWaterSplineComponent>();
 	WaterBodyComponent = GetOwner()->FindComponentByClass<UWaterBodyComponent>();
 
+	if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(UCustomBodyLakeComponent, LakePoints))
+		UpdateLake();
+}
+
+void UCustomBodyLakeComponent::UpdateLake()
+{
+	WaterSpline = GetOwner()->FindComponentByClass<UWaterSplineComponent>();
+	WaterBodyComponent = GetOwner()->FindComponentByClass<UWaterBodyComponent>();
 	if (WaterSpline && WaterBodyComponent) {
-		if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(UCustomBodyLakeComponent, LakePoints)) {
-			/*WaterSpline->ClearSplinePoints(false);
-			for (const FVector splinePoint : LakePoints) {
-				WaterSpline->AddSplinePoint(splinePoint, ESplineCoordinateSpace::World, false);
-			}
-			WaterSpline->UpdateSpline();*/
-
-			/*SetSplinePointsAlt(LakePoints, ESplineCoordinateSpace::World, true);*/
-
-			WaterSpline->ResetSpline(LakePoints);
-			WaterSpline->K2_SynchronizeAndBroadcastDataChange();
-
-			/*FOnWaterBodyChangedParams Params;
-			Params.bShapeOrPositionChanged = true;
-			Params.bWeightmapSettingsChanged = false;
-			WaterBodyComponent->UpdateAll(Params);*/
-
-			/*WaterBodyComponent->UpdateWaterHeight();
-			FOnWaterBodyChangedParams Params;
-			Params.PropertyChangedEvent.ChangeType = EPropertyChangeType::ValueSet;
-			Params.bShapeOrPositionChanged = true;
-			Params.bUserTriggered = true;
-			WaterBodyComponent->OnWaterBodyChanged(Params);*/
+		WaterSpline->ResetSpline(LakePoints);
+		WaterSpline->K2_SynchronizeAndBroadcastDataChange();
 	}
-	}
+	else 
+		UE_LOG(LogTemp, Warning, TEXT("WaterSpline or WaterBodyComponent is null."));
+}
+
+void UCustomBodyLakeComponent::SetLakePoints(TArray<FVector> points)
+{
+	LakePoints = points;
 }
 
 // Called when the game starts
