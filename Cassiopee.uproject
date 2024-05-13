@@ -36,6 +36,13 @@
 		{
 			"Name": "Water",
 			"Enabled": true
+		},
+		{
+			"Name": "rts_camera",
+			"Enabled": true
 		}
+	],
+	"TargetPlatforms": [
+		"Windows"
 	]
 }

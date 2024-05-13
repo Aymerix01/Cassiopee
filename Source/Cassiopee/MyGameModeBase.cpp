@@ -7,6 +7,7 @@
 
 AMyGameModeBase::AMyGameModeBase() 
 {
+	/*
 	PlayerControllerClass = AMyEntityController::StaticClass();
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/BP/BP_Camera"));
 	if (PlayerPawnBPClass.Class != nullptr)
@@ -19,4 +20,5 @@ AMyGameModeBase::AMyGameModeBase()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
+	*/
 }
