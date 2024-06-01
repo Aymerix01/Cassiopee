@@ -237,7 +237,7 @@ void ARTSPawn::RotateCamera(const FInputActionValue &Value)
 
 void ARTSPawn::Zoom(const FInputActionValue &Value)
 {
-	float AxisValue = Value.GetMagnitude();
+	float AxisValue = -Value.GetMagnitude();
 	if (AxisValue != 0)
 	{
 		TargetZoom = TargetZoom + (AxisValue * ZoomMultiplier);
