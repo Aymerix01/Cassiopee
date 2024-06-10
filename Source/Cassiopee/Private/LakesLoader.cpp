@@ -10,9 +10,9 @@
 #include "Engine/Blueprint.h"
 #include "CustomBodyLakeComponent.h"
 
-#define BASE_LAKE_PATH "/Script/Engine.Blueprint'/Game/BP/Landscape/ProceduralLakes/BaseLake.BaseLake'"
+//#define BASE_LAKE_PATH "/Script/Engine.Blueprint'/Game/BP/Landscape/ProceduralLakes/BaseLake.BaseLake'"
 
-
+/*
 TSharedPtr<FJsonObject> LakesLoader::loadJson(FString path)
 {
 	if (!FPlatformFileManager::Get().GetPlatformFile().FileExists(*path)) {
@@ -71,7 +71,7 @@ void LakesLoader::spawnLakes(TSharedPtr<FJsonObject> jsonFile, UWorld* world)
 		/*UE_LOG(LogTemp, Log, TEXT("rapp : %d"), rapp);
 		UE_LOG(LogTemp, Log, TEXT("lakesSize : %d"), lakesSize);
 		UE_LOG(LogTemp, Log, TEXT("maxX : %d"), maxX);
-		UE_LOG(LogTemp, Log, TEXT("minX : %d"), minX);*/
+		UE_LOG(LogTemp, Log, TEXT("minX : %d"), minX);
 
 		FCollisionQueryParams collisionParams(FName(TEXT("FoliageClusterPlacementTrace")), true, nullptr);
 		collisionParams.bReturnPhysicalMaterial = true;
@@ -111,3 +111,4 @@ void LakesLoader::spawnLakes(TSharedPtr<FJsonObject> jsonFile, UWorld* world)
 		}
 	}
 }
+*/

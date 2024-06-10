@@ -12,7 +12,9 @@
  */
 class CASSIOPEE_API LakesLoader
 {
+/*
 public:
 	static TSharedPtr<FJsonObject> loadJson(FString path);
 	static void spawnLakes(TSharedPtr<FJsonObject> jsonFile, UWorld* world);
+*/
 };

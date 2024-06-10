@@ -10,7 +10,8 @@ UCLASS()
 class CASSIOPEE_API ALakesSpawner : public AActor
 {
 	GENERATED_BODY()
-	
+
+/*
 public:	
 	// Sets default values for this actor's properties
 	ALakesSpawner();
@@ -28,5 +29,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	*/
 };

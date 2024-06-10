@@ -12,8 +12,9 @@
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CASSIOPEE_API UCustomBodyLakeComponent : public UActorComponent
 {
-	GENERATED_BODY()
 
+	GENERATED_BODY()
+/*
 public:	
 	// Sets default values for this component's properties
 	UCustomBodyLakeComponent();
@@ -43,5 +44,5 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+		*/
 };
