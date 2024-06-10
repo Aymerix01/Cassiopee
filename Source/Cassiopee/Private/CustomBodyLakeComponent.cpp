@@ -4,6 +4,7 @@
 #include "CustomBodyLakeComponent.h"
 #include "Serialization/JsonSerializer.h"
 
+/*
 // Sets default values for this component's properties
 UCustomBodyLakeComponent::UCustomBodyLakeComponent()
 {
@@ -73,4 +74,4 @@ void UCustomBodyLakeComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
-
+*/

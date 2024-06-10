@@ -4,6 +4,7 @@
 #include "LakesSpawner.h"
 #include "LakesLoader.h"
 
+/*
 // Sets default values
 ALakesSpawner::ALakesSpawner()
 {
@@ -31,3 +32,4 @@ void ALakesSpawner::Tick(float DeltaTime)
 
 }
 
+*/
