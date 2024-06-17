@@ -41,7 +41,7 @@ Korrigan est un jeu de stratégie consistant à réhabiliter une zone contaminé
 ## Explications
 
 <p align="center" style="display: flex; align-items: center; justify-content: center;">
-    <img src="ReadmeResources/avancement.png" style="margin-right: 10px;">
+    <img src="ReadmeResources/Avancement.png" style="margin-right: 10px;">
 </p>
 
 <p align="left">
