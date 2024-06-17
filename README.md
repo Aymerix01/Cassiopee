@@ -34,9 +34,9 @@ Korrigan est un jeu de stratégie consistant à réhabiliter une zone contaminé
 
 ## Gameplay
 
-<video controls>
-    <source src="ReadmeResources/GameplayKorrigan.mp4" type="video/mp4">
-</video>
+
+https://github.com/Aymerix01/Cassiopee/assets/123820772/f8e078ea-9592-4bb7-b988-5007569ec762
+
 
 ## Explications
 
